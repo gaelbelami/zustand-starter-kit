@@ -1,36 +1,157 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Zustand Auth Starter Kit 🔐
 
-## Getting Started
+[![Zustand Version](https://img.shields.io/badge/zustand-^4.0.0-blue)](https://zustand-demo.pmnd.rs/)
+[![React Version](https://img.shields.io/badge/react-^18.0.0-blue)](https://react.dev/)
 
-First, run the development server:
+A production-ready authentication starter with Zustand state management, mock API support, and seamless persistence.
+
+![Auth Flow Demo](https://via.placeholder.com/1280x600.png?text=Login+%E2%86%92+Dashboard+%E2%86%92+Profile+Demo)
+
+## Features ✨
+
+- **Complete Authentication Flow**  
+  Login, Signup, Logout with persistent sessions
+- **Mock Backend Included**  
+  LocalStorage-powered database with realistic API simulation
+- **Zero-Boilerplate Architecture**  
+  Ready-to-use stores and components
+- **TypeSafe Implementation**  
+  Full TypeScript support with strict types
+- **Dev-Friendly Tools**  
+  Built-in debug panel & configurable API delays
+- **Easy Real API Migration**  
+  Switch to real backend with minimal changes
+
+## Tech Stack 🛠️
+
+| Component        | Technology                   |
+| ---------------- | ---------------------------- |
+| State Management | Zustand + Persist Middleware |
+| Routing          | Next.js App Router           |
+| Styling          | Tailwind CSS                 |
+| Build Tool       | Vite                         |
+| Testing          | Vitest + MSW (Ready)         |
+
+## Getting Started 🚀
+
+### Prerequisites
+
+- Node.js v18+
+- npm (v9+) or pnpm
+
+### Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+git clone https://github.com/yourusername/zustand-auth-starter.git
+cd zustand-auth-starter
+pnpm install
 pnpm dev
-# or
-bun dev
+
+Project Structure 📂
+
+/src
+├── stores/
+│   ├── auth.store.ts       # Auth state & actions
+│   └── mock.store.ts       # Persistent mock database
+├── components/
+│   ├── auth/
+│   │   ├── LoginForm.tsx   # Login UI
+│   │   └── PrivateRoute.tsx# Route protection
+│   └── debug/
+│       └── DebugPanel.tsx  # State visualization
+├── mock/
+│   ├── api.ts              # API response handlers
+│   └── schema.ts           # Database types
+└── app/
+    ├── layout.tsx          # Root layout
+    └── dashboard/
+        └── page.tsx        # Protected route example
+
+
+
+Core Usage 💡
+
+1. Authentication Flow
+
+// components/auth/LoginForm.tsx
+const LoginForm = () => {
+  const { login, isAuthenticated } = useAuthStore();
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
+
+    try {
+      await login(
+        formData.get('email') as string,
+        formData.get('password') as string
+      );
+      router.push('/dashboard');
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Login failed');
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      {/* Form inputs */}
+    </form>
+  );
+};
+
+2. Route Protection
+
+// app/dashboard/page.tsx
+export default function Dashboard() {
+  return (
+    <PrivateRoute>
+      <h1>Welcome to your Dashboard!</h1>
+      <UserProfile />
+    </PrivateRoute>
+  );
+}
+
+
+Mock API Endpoints 🌐
+
+Endpoint	Method	Description
+/api/login	POST	Authenticate user
+/api/signup	POST	Create new user
+/api/validate	GET	Validate session token
+/api/logout	POST	Invalidate session
+Transition to Real API 🔄
+
+1. Disable Mock Mode
+Set VITE_MOCK_ENABLED=false in .env
+
+2. Implement API Service
+
+// services/auth.ts
+export const authService = {
+  login: async (credentials: { email: string; password: string }) => {
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(credentials)
+    });
+    return handleResponse(response);
+  }
+};
+
+3. Update Store Actions
+
+// In auth.store.ts
+login: async (email, password) => {
+  const { user, token } = await authService.login({ email, password });
+  set({ user, token, isAuthenticated: true });
+}
+
+Contributing 🤝
+
+1. Fork the repository
+2. Create feature branch: git checkout -b feat/amazing-feature
+3. Commit changes: git commit -m 'Add amazing feature'
+4. Push to branch: git push origin feat/amazing-feature
+5. Open a Pull Request
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
