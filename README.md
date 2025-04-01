@@ -5,7 +5,8 @@
 
 A production-ready authentication starter with Zustand state management, mock API support, and seamless persistence.
 
-![Auth Flow Demo](https://via.placeholder.com/1280x600.png?text=Login+%E2%86%92+Dashboard+%E2%86%92+Profile+Demo)
+![Auth Flow Demo](assets/img1.png)
+![Auth Flow Demo](assets/img2.png)
 
 ## Features ✨
 
